@@ -1,0 +1,17 @@
+[package]
+name = "cargo-topo"
+version = "0.1.0"
+edition = "2024"
+description = "List workspace crates in topological dependency order"
+license = "Apache-2.0"
+repository = "https://github.com/anthrotype/cargo-topo"
+
+[[bin]]
+name = "cargo-topo"
+path = "src/main.rs"
+
+[dependencies]
+guppy = "0.17"
+cargo_metadata = "0.18"
+clap = { version = "4.0", features = ["derive"] }
+clap-cargo = "0.13"
