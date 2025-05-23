@@ -1,9 +1,12 @@
 # cargo-topo
 
-A Cargo subcommand for listing workspace crates in topological dependency order.
-It can be used for understanding build order, scripting CI/CD pipelines, and analyzing complex workspace dependencies.
+A Cargo subcommand for listing workspace crates in topological dependency order, useful for understanding build order, or scripting CI/CD pipelines.
 
-`cargo-topo` uses the [guppy](https://crates.io/crates/guppy) crate to parse workspace metadata, then performs topological sorting on the dependency graph.
+`cargo-topo` uses the [guppy](https://crates.io/crates/guppy) crate to parse workspace metadata and perform topological sorting on the dependency graph.
+
+Topological dependency order ensures dependencies appear before the crates that depend on them.
+For example, if `api-server` depends on `core-lib`, and `core-lib` depends on `utils`, the order would be: `utils`, `core-lib`, `api-server`.
+Use `--reverse` to see reverse dependency order (dependents first).
 
 ## Usage
 
@@ -51,4 +54,4 @@ cargo topo --include-dev
 
 ## License
 
-Licensed under the Apache License, Version 2.0 ([LICENSE](LICENSE)).
+Licensed under the Apache License, Version 2.0 ([LICENSE](LICENSE-APACHE)).

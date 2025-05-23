@@ -25,7 +25,7 @@ struct TopoArgs {
     #[arg(short, long)]
     manifest_path: Option<std::path::PathBuf>,
 
-    /// Show dependencies in reverse order (dependencies first)
+    /// Show dependencies in reverse order (dependents first)
     #[arg(short, long)]
     reverse: bool,
 
@@ -139,10 +139,11 @@ fn show_workspace_topological_order(
     workspace_ids: &HashSet<&guppy::PackageId>,
     reverse: bool,
 ) -> Result<(), Box<dyn std::error::Error>> {
+    // in guppy DependencyDirection, the logic is reversed from traditional topological order
     let direction = if reverse {
-        DependencyDirection::Reverse
+        DependencyDirection::Forward // dependent packages appear before their dependencies
     } else {
-        DependencyDirection::Forward
+        DependencyDirection::Reverse // dependencies appear first by default
     };
     // Iterate in topological order, filtering for workspace members only
     for package in dependency_set.packages(direction) {
@@ -173,10 +174,11 @@ fn show_all_dependencies_topological_order(
     workspace_ids: &HashSet<&guppy::PackageId>,
     reverse: bool,
 ) -> Result<(), Box<dyn std::error::Error>> {
+    // in guppy DependencyDirection, the logic is reversed from traditional topological order
     let direction = if reverse {
-        DependencyDirection::Reverse
+        DependencyDirection::Forward // dependent packages appear before their dependencies
     } else {
-        DependencyDirection::Forward
+        DependencyDirection::Reverse // dependencies appear first by default
     };
 
     for package in dependency_set.packages(direction) {
@@ -250,10 +252,11 @@ fn show_compact_output(
     reverse: bool,
     all: bool,
 ) -> Result<(), Box<dyn std::error::Error>> {
+    // in guppy DependencyDirection, the logic is reversed from traditional topological order
     let direction = if reverse {
-        DependencyDirection::Reverse
+        DependencyDirection::Forward // dependent packages appear before their dependencies
     } else {
-        DependencyDirection::Forward
+        DependencyDirection::Reverse // dependencies appear first by default
     };
 
     let mut crate_names = Vec::new();
