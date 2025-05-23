@@ -112,7 +112,11 @@ fn run_topo_command(args: TopoArgs) -> Result<(), Box<dyn std::error::Error>> {
                 println!("Dependencies from '{}' in topological order:", root_name);
             }
         } else {
-            println!("Workspace crates in topological order:");
+            if args.reverse {
+                println!("Workspace crates in reverse topological order:");
+            } else {
+                println!("Workspace crates in topological order:");
+            }
         }
         if !args.exclude.is_empty() {
             println!("Excluding: {}", args.exclude.join(", "));
