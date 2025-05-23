@@ -45,7 +45,7 @@ struct TopoArgs {
     /// Select a specific package as the root of the dependency tree
     #[arg(short = 'p', long = "package")]
     package: Option<String>,
-    
+
     /// Exclude specific workspace members from the output
     #[arg(long)]
     exclude: Vec<String>,
@@ -89,13 +89,12 @@ fn run_topo_command(args: TopoArgs) -> Result<(), Box<dyn std::error::Error>> {
             .ok_or_else(|| format!("Package '{}' not found in workspace", root_package))?;
 
         // Query dependencies starting from root package, filtering dev-only deps
-        package_graph.query_directed(
-            std::iter::once(root_pkg.id()), 
-            DependencyDirection::Forward
-        )?.resolve_with_fn(|_query, link| {
-            // Include the link unless it's dev-only and we're not including dev deps
-            !link.dev_only() || args.include_dev
-        })
+        package_graph
+            .query_directed(std::iter::once(root_pkg.id()), DependencyDirection::Forward)?
+            .resolve_with_fn(|_query, link| {
+                // Include the link unless it's dev-only and we're not including dev deps
+                !link.dev_only() || args.include_dev
+            })
     } else {
         // Query full workspace
         package_graph.query_workspace().resolve()
@@ -107,7 +106,10 @@ fn run_topo_command(args: TopoArgs) -> Result<(), Box<dyn std::error::Error>> {
         if args.package.is_some() {
             let root_name = args.package.as_ref().unwrap();
             if args.reverse {
-                println!("Dependencies from '{}' in reverse topological order:", root_name);
+                println!(
+                    "Dependencies from '{}' in reverse topological order:",
+                    root_name
+                );
             } else {
                 println!("Dependencies from '{}' in topological order:", root_name);
             }
@@ -122,13 +124,13 @@ fn run_topo_command(args: TopoArgs) -> Result<(), Box<dyn std::error::Error>> {
             println!("Excluding: {}", args.exclude.join(", "));
         }
         println!();
-        
+
         if args.all {
             show_all_dependencies_topological_order(&dependency_set, &workspace_ids, args.reverse)?;
         } else {
             show_workspace_topological_order(&dependency_set, &workspace_ids, args.reverse)?;
         }
-        
+
         if args.include_dev {
             println!("\nDev-dependencies analysis:");
             show_dev_dependencies(&package_graph, &dependency_set, &workspace_ids)?;
