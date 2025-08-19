@@ -1,4 +1,4 @@
-# cargo-topo
+# cargo-topo 🐁
 
 A Cargo subcommand for listing workspace crates in topological dependency order, useful for understanding build order, or scripting CI/CD pipelines.
 
